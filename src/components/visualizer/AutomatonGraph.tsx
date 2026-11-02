@@ -189,7 +189,7 @@ export const AutomatonGraph: React.FC<AutomatonGraphProps> = ({
   }, [initialNodes, initialEdges, setNodes, setEdges]);
 
   return (
-    <div className="w-full h-[600px] bg-slate-950 rounded-xl border border-slate-800 relative overflow-hidden shadow-inner">
+    <div id="patternguard-graph-canvas" className="w-full h-[600px] bg-slate-950 rounded-xl border border-slate-800 relative overflow-hidden shadow-inner">
       <ReactFlow
         nodes={nodes}
         edges={edges}

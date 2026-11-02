@@ -9,11 +9,14 @@ import {
   CheckCircle2,
   AlertTriangle,
   Play,
+  Download,
+  FileSpreadsheet,
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { SummaryDashboard } from '../components/scanner/SummaryDashboard';
 import { LogViewer } from '../components/scanner/LogViewer';
 import { RuleManagerModal } from '../components/scanner/RuleManagerModal';
+import { exportReportCSV, exportReportJSON } from '../utils/exportUtils';
 
 export const ThreatScannerPage: React.FC = () => {
   const {
@@ -160,6 +163,28 @@ export const ThreatScannerPage: React.FC = () => {
             )}
             Scan Pass
           </button>
+
+          {/* Export Report Actions */}
+          {scanOutput && scanOutput.matches.length > 0 && (
+            <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
+              <button
+                onClick={() => exportReportCSV(scanOutput.matches)}
+                className="px-2 py-1 text-xs font-mono rounded bg-slate-900 hover:bg-slate-800 text-slate-300 flex items-center gap-1 transition"
+                title="Download CSV report"
+              >
+                <FileSpreadsheet className="w-3 h-3 text-emerald-400" />
+                CSV
+              </button>
+              <button
+                onClick={() => exportReportJSON(scanOutput)}
+                className="px-2 py-1 text-xs font-mono rounded bg-slate-900 hover:bg-slate-800 text-slate-300 flex items-center gap-1 transition"
+                title="Download JSON report"
+              >
+                <Download className="w-3 h-3 text-cyan-400" />
+                JSON
+              </button>
+            </div>
+          )}
 
           {inputText && (
             <button

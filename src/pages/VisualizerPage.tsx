@@ -8,12 +8,21 @@ import {
   Sparkles,
   Layers,
   Terminal,
+  Code2,
+  Download,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { AutomatonGraph } from '../components/visualizer/AutomatonGraph';
 import { TapeController } from '../components/visualizer/TapeController';
 import { TransitionTable } from '../components/visualizer/TransitionTable';
 import { ASTView } from '../components/visualizer/ASTView';
+import { CodeGeneratorModal } from '../components/common/CodeGeneratorModal';
+import {
+  exportAutomatonJSON,
+  exportElementAsSVG,
+  exportElementAsPNG,
+} from '../utils/exportUtils';
 
 export const VisualizerPage: React.FC = () => {
   const {
@@ -34,6 +43,7 @@ export const VisualizerPage: React.FC = () => {
   } = useAppStore();
 
   const [activeSubTab, setActiveSubTab] = useState<'graph' | 'table' | 'ast'>('graph');
+  const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
 
   useEffect(() => {
     compileVisualizerAutomata();
@@ -236,21 +246,70 @@ export const VisualizerPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Trap state toggle */}
-            {visualizerStage !== 'eNFA' && activeSubTab === 'graph' && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {/* Trap state toggle */}
+              {visualizerStage !== 'eNFA' && activeSubTab === 'graph' && (
+                <button
+                  onClick={() => setShowTrapState(!showTrapState)}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-lg flex items-center gap-1.5 border transition ${
+                    showTrapState
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                      : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                  }`}
+                  title="Show / Hide Dead Trap State (∅)"
+                >
+                  {showTrapState ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                  Trap (∅)
+                </button>
+              )}
+
+              {/* Generate Code button */}
               <button
-                onClick={() => setShowTrapState(!showTrapState)}
-                className={`px-2.5 py-1 text-xs font-medium rounded-lg flex items-center gap-1.5 border transition ${
-                  showTrapState
-                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                    : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
-                }`}
-                title="Show / Hide Dead Trap State (∅)"
+                onClick={() => setIsCodeModalOpen(true)}
+                disabled={!visualizerData?.minDfa}
+                className="px-2.5 py-1 text-xs font-medium rounded-lg bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/40 flex items-center gap-1 transition"
+                title="Export Min-DFA as Python or C99 code"
               >
-                {showTrapState ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                Trap State (∅)
+                <Code2 className="w-3.5 h-3.5" />
+                Generate Code
               </button>
-            )}
+
+              {/* Export SVG */}
+              <button
+                onClick={() => exportElementAsSVG(document.getElementById('patternguard-graph-canvas'))}
+                className="px-2 py-1 text-xs font-mono rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1 transition"
+                title="Download SVG image"
+              >
+                <Download className="w-3 h-3 text-emerald-400" />
+                SVG
+              </button>
+
+              {/* Export PNG */}
+              <button
+                onClick={() => exportElementAsPNG(document.getElementById('patternguard-graph-canvas'))}
+                className="px-2 py-1 text-xs font-mono rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1 transition"
+                title="Download PNG image"
+              >
+                <ImageIcon className="w-3 h-3 text-cyan-400" />
+                PNG
+              </button>
+
+              {/* Export Automaton JSON */}
+              <button
+                onClick={() => {
+                  if (currentAutomaton && currentAutomaton.type !== 'eNFA') {
+                    exportAutomatonJSON(currentAutomaton as any, selectedVisualizerRuleId);
+                  } else if (visualizerData?.minDfa) {
+                    exportAutomatonJSON(visualizerData.minDfa, selectedVisualizerRuleId);
+                  }
+                }}
+                className="px-2 py-1 text-xs font-mono rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1 transition"
+                title="Download Automaton JSON"
+              >
+                <Download className="w-3 h-3 text-amber-400" />
+                JSON
+              </button>
+            </div>
           </div>
 
           {/* Tab Content Display */}
@@ -302,6 +361,18 @@ export const VisualizerPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Code Generator Export Modal */}
+      <CodeGeneratorModal
+        isOpen={isCodeModalOpen}
+        onClose={() => setIsCodeModalOpen(false)}
+        automaton={visualizerData?.minDfa ?? null}
+        regex={
+          selectedVisualizerRuleId === 'custom'
+            ? customVisualizerRegex
+            : rules.find((r) => r.id === selectedVisualizerRuleId)?.regex || customVisualizerRegex
+        }
+      />
     </div>
   );
 };

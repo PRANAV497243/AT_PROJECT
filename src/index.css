@@ -15,6 +15,18 @@
   height: 7px;
 }
 
+/* Disable font ligatures for accurate code & operator symbol rendering (<=, ==, =>, !=) */
+.no-ligatures,
+.lexer-gen-tab,
+.lexer-gen-tab code,
+.lexer-gen-tab pre,
+.lexer-gen-tab textarea,
+.lexer-gen-tab table,
+.lexer-gen-tab .font-mono {
+  font-variant-ligatures: none !important;
+  font-feature-settings: "liga" 0, "calt" 0 !important;
+}
+
 ::-webkit-scrollbar-track {
   background: #090d16;
 }

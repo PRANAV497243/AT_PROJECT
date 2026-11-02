@@ -4,10 +4,16 @@ import {
   GitGraph,
   Sparkles,
   BookOpen,
+  ShieldCheck,
+  Code,
+  Flame,
 } from 'lucide-react';
 import { useAppStore } from './store/useAppStore';
 import { ThreatScannerPage } from './pages/ThreatScannerPage';
 import { VisualizerPage } from './pages/VisualizerPage';
+import { FormValidatorPage } from './pages/FormValidatorPage';
+import { LexerGeneratorPage } from './pages/LexerGeneratorPage';
+import { BenchmarkPage } from './pages/BenchmarkPage';
 
 export default function App() {
   const { activeTab, setActiveTab } = useAppStore();
@@ -17,7 +23,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-12 antialiased">
       {/* Top Sticky Header */}
       <header className="border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
           {/* Logo & Subtitle */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
@@ -29,7 +35,7 @@ export default function App() {
                   PatternGuard
                 </h1>
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-                  DFA Log Scanner
+                  DFA Engine
                 </span>
               </div>
               <p className="text-xs text-slate-400">
@@ -38,41 +44,77 @@ export default function App() {
             </div>
           </div>
 
-          {/* Tab Navigation & Theory Notes */}
+          {/* 5 Tabs Navigation & Theory Notes */}
           <div className="flex items-center gap-2">
-            <nav className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <nav className="flex flex-wrap items-center bg-slate-950 p-1 rounded-xl border border-slate-800 gap-0.5">
               <button
                 onClick={() => setActiveTab('scanner')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                   activeTab === 'scanner'
                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <ShieldAlert className="w-3.5 h-3.5" />
-                <span>Threat Scanner (Main)</span>
+                <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+                <span>Threat Scanner</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('visualizer')}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
                   activeTab === 'visualizer'
                     ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <GitGraph className="w-3.5 h-3.5" />
-                <span>Automata Visualizer</span>
+                <GitGraph className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Visualizer</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('validator')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                  activeTab === 'validator'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Form Validator</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('lexer-gen')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                  activeTab === 'lexer-gen'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Code className="w-3.5 h-3.5 text-purple-400" />
+                <span>Lexer Gen</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('benchmark')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition ${
+                  activeTab === 'benchmark'
+                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Flame className="w-3.5 h-3.5 text-amber-400" />
+                <span>ReDoS Benchmark</span>
               </button>
             </nav>
 
             <button
               onClick={() => setShowTocNotes(!showTocNotes)}
-              className="px-3 py-2 text-xs font-medium rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1.5 transition"
+              className="px-2.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800/80 hover:bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1 transition"
               title="Theory of Computation Architecture Notes"
             >
               <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
-              <span className="hidden sm:inline">TOC Architecture</span>
+              <span className="hidden xl:inline">TOC Notes</span>
             </button>
           </div>
         </div>
@@ -136,7 +178,11 @@ export default function App() {
 
       {/* Main View Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 mt-5">
-        {activeTab === 'scanner' ? <ThreatScannerPage /> : <VisualizerPage />}
+        {activeTab === 'scanner' && <ThreatScannerPage />}
+        {activeTab === 'visualizer' && <VisualizerPage />}
+        {activeTab === 'validator' && <FormValidatorPage />}
+        {activeTab === 'lexer-gen' && <LexerGeneratorPage />}
+        {activeTab === 'benchmark' && <BenchmarkPage />}
       </main>
     </div>
   );

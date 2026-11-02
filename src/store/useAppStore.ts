@@ -31,8 +31,8 @@ function savePersistedRules(rules: Rule[]) {
 
 export interface AppState {
   // Navigation
-  activeTab: 'scanner' | 'visualizer';
-  setActiveTab: (tab: 'scanner' | 'visualizer') => void;
+  activeTab: 'scanner' | 'visualizer' | 'validator' | 'lexer-gen' | 'benchmark';
+  setActiveTab: (tab: 'scanner' | 'visualizer' | 'validator' | 'lexer-gen' | 'benchmark') => void;
 
   // Rules management
   rules: Rule[];
